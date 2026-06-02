@@ -1011,7 +1011,7 @@ function renderPlan() {
   SESSION_ORDER.forEach(key => {
     const exs = getEffectiveSession(key);
     html += `
-      <div class="session-block" id="block-${key.replace(' ','-')}">`
+      <div class="session-block" id="block-${key.replace(' ','-')}">
         <div class="session-block-header" onclick="toggleBlock('${key.replace(' ','-')}')">
           <div class="sbh-left">
             <div class="sbh-dot" style="background:${color(key)}"></div>
