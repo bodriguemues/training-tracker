@@ -1228,8 +1228,8 @@ function renderWorkout() {
 
   html += `
     <div class="finish-wrap">
-      <button class="finish-btn" onclick="finishWorkout()" ${doneSetCount === 0 ? 'disabled' : ''}>
-        ${progress >= 1 ? '🏆 Training abschließen' : `Training speichern (${doneSetCount}/${totalSetCount})`}
+      <button class="finish-btn" onclick="finishWorkout()">
+        ${progress >= 1 ? '🏆 Training abschließen' : doneSetCount > 0 ? `Training speichern (${doneSetCount}/${totalSetCount})` : 'Training speichern'}
       </button>
     </div>
   `;
@@ -1526,11 +1526,15 @@ function renderSessionEditModal() {
           <div class="ex-name">${ex.name}</div>
           <div class="ex-muscle">${ex.muscle} · ${ex.sets[0]}× · ${ex.reps} Wdh. · ${ex.t === 'orm' ? 'ORM' : 'RIR'}</div>
         </div>
-        <button class="del-btn" onclick="deleteExerciseFromSession(${i})">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>
-          </svg>
-        </button>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="del-btn" style="background:var(--surface2);color:var(--text2)" onclick="moveExercise(${i},-1)" ${i === 0 ? 'disabled style="opacity:0.3;background:var(--surface2);color:var(--text2)"' : ''}>↑</button>
+          <button class="del-btn" style="background:var(--surface2);color:var(--text2)" onclick="moveExercise(${i},1)" ${i === exs.length-1 ? 'disabled style="opacity:0.3;background:var(--surface2);color:var(--text2)"' : ''}>↓</button>
+          <button class="del-btn" onclick="deleteExerciseFromSession(${i})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>
+            </svg>
+          </button>
+        </div>
       </div>
     `;
   });
@@ -1543,6 +1547,19 @@ function renderSessionEditModal() {
     html += `<button class="btn btn-secondary" onclick="resetSessionToDefault()" style="margin-top:6px">↩ Auf Standard zurücksetzen</button>`;
   }
   document.getElementById('modal-body').innerHTML = html;
+}
+
+function moveExercise(exIdx, dir) {
+  if (!modalSession) return;
+  initSessionMod(modalSession);
+  const exs = state.sessionMods[modalSession];
+  const newIdx = exIdx + dir;
+  if (newIdx < 0 || newIdx >= exs.length) return;
+  const tmp = exs[exIdx];
+  exs[exIdx] = exs[newIdx];
+  exs[newIdx] = tmp;
+  saveState();
+  renderSessionEditModal();
 }
 
 function deleteExerciseFromSession(exIdx) {
