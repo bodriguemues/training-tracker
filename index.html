@@ -934,6 +934,7 @@ function startWorkoutTimer() {
 
 function stopWorkoutTimer() {
   if (workoutTimerInterval) { clearInterval(workoutTimerInterval); workoutTimerInterval = null; }
+}
 
 function loadState() {
   try {
@@ -1126,8 +1127,6 @@ function openSessionDetail(key) {
 // ═══════════════════════════════════════════════════════════
 //  WORKOUT VIEW
 // ═══════════════════════════════════════════════════════════
-
-}
 
 function startWorkout(sessionKey) {
   const wi = state.planWeek;
