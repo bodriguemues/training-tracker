@@ -685,6 +685,8 @@
     <div id="plan-week-badge" style="font-size:12px;color:var(--text2)"></div>
   </div>
 
+  <div id="home-timer-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:20px;"></div>
+
   <div class="week-scroll" id="week-pills"></div>
   <div id="plan-sessions"></div>
 </div>
@@ -902,9 +904,99 @@ let state = {
   logs: [],
   sessionMods: {},
   bodyWeightKg: 80,
+  homeTimer: null,
 };
 
 let workoutTimerInterval = null;
+let homeTimerInterval = null;
+
+function getHomeTimerElapsed() {
+  const ht = state.homeTimer;
+  if (!ht) return 0;
+  if (ht.running && ht.startMs) return ht.elapsed + (Date.now() - ht.startMs);
+  return ht.elapsed;
+}
+
+function toggleHomeTimer() {
+  if (!state.homeTimer) state.homeTimer = { startMs: null, elapsed: 0, running: false };
+  const ht = state.homeTimer;
+  if (ht.running) {
+    ht.elapsed += Date.now() - ht.startMs;
+    ht.startMs = null;
+    ht.running = false;
+    clearInterval(homeTimerInterval);
+    homeTimerInterval = null;
+  } else {
+    ht.startMs = Date.now();
+    ht.running = true;
+    homeTimerInterval = setInterval(() => renderHomeTimerDisplay(), 1000);
+  }
+  saveState();
+  renderHomeTimer();
+}
+
+function resetHomeTimer() {
+  clearInterval(homeTimerInterval);
+  homeTimerInterval = null;
+  state.homeTimer = { startMs: null, elapsed: 0, running: false };
+  saveState();
+  renderHomeTimer();
+}
+
+function renderHomeTimerDisplay() {
+  const el = document.getElementById('home-timer-display');
+  if (!el) return;
+  const elapsed = getHomeTimerElapsed();
+  el.textContent = formatElapsed(elapsed);
+  el.style.color = 'var(--accent)';
+}
+
+function renderHomeTimer() {
+  const el = document.getElementById('home-timer-card');
+  if (!el) return;
+  const ht = state.homeTimer || { startMs: null, elapsed: 0, running: false };
+  const running = ht.running;
+  const elapsed = getHomeTimerElapsed();
+  const hasTime = elapsed > 0;
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px">
+      <button onclick="toggleHomeTimer()" style="
+        width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;flex-shrink:0;
+        background:${running ? 'rgba(230,57,70,0.18)' : 'var(--accent)'};
+        display:flex;align-items:center;justify-content:center;
+        box-shadow:${running ? '0 0 0 2px var(--accent)' : 'none'};
+        transition:all 0.2s;
+      ">
+        ${running
+          ? `<svg width="20" height="20" fill="var(--accent)" viewBox="0 0 24 24"><rect x="5" y="3" width="5" height="18" rx="1"/><rect x="14" y="3" width="5" height="18" rx="1"/></svg>`
+          : `<svg width="20" height="20" fill="white" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>`
+        }
+      </button>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">
+          ${running ? '🔴 Läuft' : hasTime ? 'Gestoppt' : 'Trainingstimer'}
+        </div>
+        <div id="home-timer-display" style="font-size:36px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1.5px;color:${running ? 'var(--accent)' : hasTime ? 'var(--text)' : 'var(--text2)'}">
+          ${formatElapsed(elapsed)}
+        </div>
+      </div>
+      ${hasTime ? `
+        <button onclick="resetHomeTimer()" style="
+          background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+          font-size:12px;cursor:pointer;padding:8px 12px;border-radius:10px;
+          transition:color 0.15s;
+        ">Reset</button>
+      ` : ''}
+    </div>
+  `;
+}
+
+function startHomeTimerIfRunning() {
+  if (state.homeTimer && state.homeTimer.running) {
+    if (homeTimerInterval) clearInterval(homeTimerInterval);
+    homeTimerInterval = setInterval(() => renderHomeTimerDisplay(), 1000);
+  }
+}
 
 function calcCalories(elapsedMs, met) {
   const hrs = elapsedMs / 3600000;
@@ -1760,6 +1852,8 @@ function submitAddExercise() {
 loadState();
 renderPlan();
 renderSetup();
+renderHomeTimer();
+startHomeTimerIfRunning();
 if (state.activeWorkout) startWorkoutTimer();
 
 // ═══════════════════════════════════════════════════════════
