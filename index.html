@@ -717,6 +717,15 @@
   </div>
 
   <div class="setup-section">
+    <div class="section-label">Trainingsplan</div>
+    <div class="orm-card">
+      <div class="orm-row" style="flex-direction:column; align-items:flex-start; gap:10px">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;" id="plan-selector"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="setup-section">
     <div class="section-label">Deine 1RM-Werte</div>
     <div class="orm-card" id="orm-inputs"></div>
   </div>
@@ -790,41 +799,53 @@
 //  DATA
 // ═══════════════════════════════════════════════════════════
 
-const WEEKS = [
-  { idx: 0, label: 'W1', name: 'Intro Week' },
-  { idx: 1, label: 'W2', name: 'Akkumulation 1' },
-  { idx: 2, label: 'W3', name: 'Akkumulation 2' },
-  { idx: 3, label: 'W4', name: 'Overreaching' },
-  { idx: 4, label: 'W5', name: 'Deload' },
-];
+// ═══════════════════════════════════════════════════════════
+//  PLANS REGISTRY
+//  Jeder Trainingsplan (aus einer Excel-Datei) ist ein eigener
+//  Eintrag hier. Weitere Pläne einfach nach demselben Muster
+//  hinzufügen.
+// ═══════════════════════════════════════════════════════════
 
-// Percentage factors per week
-const OK_F  = [0.710, 0.730, 0.740, 0.750, 0.4752];
-const PPB_F = [0.655, 0.675, 0.685, 0.695, 0.43989];
+const DEFAULT_PLAN_ID = 'ppb-profi';
 
-// 1RM exercise keys
-const ORM_KEYS = [
-  { key: 'bankdruecken',    name: 'LH Bankdrücken',          muscle: 'Brust' },
-  { key: 'rudern_brust',    name: 'Rudern zur Brust',         muscle: 'Rücken' },
-  { key: 'latzug',          name: 'Latzug',                   muscle: 'Rücken' },
-  { key: 'schraeg',         name: 'LH Schrägbankdrücken',     muscle: 'Brust' },
-  { key: 'rudern_bauch',    name: 'Rudern zum Bauch',         muscle: 'Rücken' },
-  { key: 'schulter',        name: 'KH Schulterdrücken',       muscle: 'Mittlere Schulter' },
-  { key: 'kniebeuge',       name: 'Kniebeuge',                muscle: 'Quads' },
-  { key: 'beinpresse',      name: 'Beinpresse',               muscle: 'Quads' },
-  { key: 'rum_kreuzheben',  name: 'Rum. Kreuzheben',          muscle: 'Hamstrings' },
-];
-
-const SESSION_COLORS = {
-  'OK 1':  '#4ade80',
-  'UK 1':  '#60a5fa',
-  'Push':  '#e63946',
-  'Pull':  '#c084fc',
-  'Beine': '#fb923c',
-};
-
-// Exercise type: 'orm' = auto weight, 'rir' = RIR guidance
-const SESSIONS_DATA = {
+const PLANS = {
+  'ppb-profi': {
+    id: 'ppb-profi',
+    name: 'OK/UK + PPB · 5x Profi',
+    weeks: [
+      { idx: 0, label: 'W1', name: 'Intro Week' },
+      { idx: 1, label: 'W2', name: 'Akkumulation 1' },
+      { idx: 2, label: 'W3', name: 'Akkumulation 2' },
+      { idx: 3, label: 'W4', name: 'Overreaching' },
+      { idx: 4, label: 'W5', name: 'Deload' },
+    ],
+    // Percentage factors per week, referenziert über ex.f
+    factorTables: {
+      ok:  [0.710, 0.730, 0.740, 0.750, 0.4752],
+      ppb: [0.655, 0.675, 0.685, 0.695, 0.43989],
+    },
+    // 1RM exercise keys
+    ormKeys: [
+      { key: 'bankdruecken',    name: 'LH Bankdrücken',          muscle: 'Brust' },
+      { key: 'rudern_brust',    name: 'Rudern zur Brust',         muscle: 'Rücken' },
+      { key: 'latzug',          name: 'Latzug',                   muscle: 'Rücken' },
+      { key: 'schraeg',         name: 'LH Schrägbankdrücken',     muscle: 'Brust' },
+      { key: 'rudern_bauch',    name: 'Rudern zum Bauch',         muscle: 'Rücken' },
+      { key: 'schulter',        name: 'KH Schulterdrücken',       muscle: 'Mittlere Schulter' },
+      { key: 'kniebeuge',       name: 'Kniebeuge',                muscle: 'Quads' },
+      { key: 'beinpresse',      name: 'Beinpresse',               muscle: 'Quads' },
+      { key: 'rum_kreuzheben',  name: 'Rum. Kreuzheben',          muscle: 'Hamstrings' },
+    ],
+    sessionColors: {
+      'OK 1':  '#4ade80',
+      'UK 1':  '#60a5fa',
+      'Push':  '#e63946',
+      'Pull':  '#c084fc',
+      'Beine': '#fb923c',
+    },
+    sessionOrder: ['OK 1', 'UK 1', 'Push', 'Pull', 'Beine'],
+    // Exercise type: 'orm' = auto weight, 'rir' = RIR guidance
+    sessionsData: {
   'OK 1': [
     { name: 'LH Bankdrücken',       muscle: 'Brust',             t:'orm', key:'bankdruecken', f:'ok', sets:[3,4,4,4,3], reps:8 },
     { name: 'Rudern zur Brust',     muscle: 'Rücken',            t:'orm', key:'rudern_brust',  f:'ok', sets:[4,4,4,5,3], reps:8 },
@@ -870,25 +891,32 @@ const SESSIONS_DATA = {
     { name: 'Wadenheben',           muscle: 'Waden',             t:'rir', rir:[2,2,1,0,4],     sets:[5,6,6,7,3], reps:10 },
     { name: 'Crunches',             muscle: 'Bauch',             t:'rir', rir:[2,2,1,0,4],     sets:[5,6,6,7,3], reps:12 },
   ],
+    },
+  },
 };
 
-const SESSION_ORDER = ['OK 1', 'UK 1', 'Push', 'Pull', 'Beine'];
+function getActivePlan() {
+  return PLANS[state.activePlanId] || PLANS[DEFAULT_PLAN_ID];
+}
 
 // ═══════════════════════════════════════════════════════════
 //  SESSION HELPERS
 // ═══════════════════════════════════════════════════════════
 
 function getEffectiveSession(sessionKey) {
-  if (state.sessionMods && state.sessionMods[sessionKey]) {
-    return state.sessionMods[sessionKey];
+  const planId = state.activePlanId;
+  if (state.sessionMods && state.sessionMods[planId] && state.sessionMods[planId][sessionKey]) {
+    return state.sessionMods[planId][sessionKey];
   }
-  return SESSIONS_DATA[sessionKey] || [];
+  return getActivePlan().sessionsData[sessionKey] || [];
 }
 
 function initSessionMod(sessionKey) {
+  const planId = state.activePlanId;
   if (!state.sessionMods) state.sessionMods = {};
-  if (!state.sessionMods[sessionKey]) {
-    state.sessionMods[sessionKey] = JSON.parse(JSON.stringify(SESSIONS_DATA[sessionKey]));
+  if (!state.sessionMods[planId]) state.sessionMods[planId] = {};
+  if (!state.sessionMods[planId][sessionKey]) {
+    state.sessionMods[planId][sessionKey] = JSON.parse(JSON.stringify(getActivePlan().sessionsData[sessionKey]));
   }
 }
 
@@ -897,7 +925,8 @@ function initSessionMod(sessionKey) {
 // ═══════════════════════════════════════════════════════════
 
 let state = {
-  orm: { bankdruecken:0, rudern_brust:0, latzug:0, schraeg:0, rudern_bauch:0, schulter:0, kniebeuge:0, beinpresse:0, rum_kreuzheben:0 },
+  activePlanId: DEFAULT_PLAN_ID,
+  orm: { [DEFAULT_PLAN_ID]: { bankdruecken:0, rudern_brust:0, latzug:0, schraeg:0, rudern_bauch:0, schulter:0, kniebeuge:0, beinpresse:0, rum_kreuzheben:0 } },
   currentWeek: 0,  // 0-4
   planWeek: 0,     // which week is shown in plan
   activeWorkout: null,
@@ -959,6 +988,15 @@ function renderHomeTimer() {
   const elapsed = getHomeTimerElapsed();
   const hasTime = elapsed > 0;
   el.innerHTML = `
+    ${hasTime ? `
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+        <button onclick="resetHomeTimer()" style="
+          background:var(--surface2);border:1px solid var(--border);color:var(--text2);
+          font-size:12px;cursor:pointer;padding:6px 12px;border-radius:10px;
+          transition:color 0.15s;
+        ">Reset</button>
+      </div>
+    ` : ''}
     <div style="display:flex;align-items:center;gap:16px">
       <button onclick="toggleHomeTimer()" style="
         width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;flex-shrink:0;
@@ -980,13 +1018,6 @@ function renderHomeTimer() {
           ${formatElapsed(elapsed)}
         </div>
       </div>
-      ${hasTime ? `
-        <button onclick="resetHomeTimer()" style="
-          background:var(--surface2);border:1px solid var(--border);color:var(--text2);
-          font-size:12px;cursor:pointer;padding:8px 12px;border-radius:10px;
-          transition:color 0.15s;
-        ">Reset</button>
-      ` : ''}
     </div>
   `;
 }
@@ -1028,6 +1059,31 @@ function stopWorkoutTimer() {
   if (workoutTimerInterval) { clearInterval(workoutTimerInterval); workoutTimerInterval = null; }
 }
 
+function migrateStateToPlans() {
+  // Alte Struktur: state.orm war flach ({bankdruecken: 80, ...}).
+  // Neue Struktur: state.orm ist pro Plan genamespaced ({[planId]: {bankdruecken: 80, ...}}).
+  const ormVals = Object.values(state.orm || {});
+  const ormIsFlat = ormVals.some(v => typeof v !== 'object' || v === null);
+  if (ormIsFlat) {
+    state.orm = { [DEFAULT_PLAN_ID]: state.orm };
+  }
+
+  // Alte Struktur: state.sessionMods war {sessionKey: [...]}.
+  // Neue Struktur: {[planId]: {sessionKey: [...]}}.
+  const modVals = Object.values(state.sessionMods || {});
+  const modsIsFlat = modVals.some(v => Array.isArray(v));
+  if (modsIsFlat) {
+    state.sessionMods = { [DEFAULT_PLAN_ID]: state.sessionMods };
+  }
+
+  if (!state.activePlanId || !PLANS[state.activePlanId]) {
+    state.activePlanId = DEFAULT_PLAN_ID;
+  }
+  if (!state.orm[state.activePlanId]) {
+    state.orm[state.activePlanId] = {};
+  }
+}
+
 function loadState() {
   try {
     const s = localStorage.getItem('tt_state');
@@ -1036,6 +1092,7 @@ function loadState() {
       state = { ...state, ...parsed };
     }
   } catch(e) {}
+  migrateStateToPlans();
 }
 
 function saveState() {
@@ -1052,9 +1109,9 @@ function mround(v, m) {
 
 function calcWeight(ex, weekIdx) {
   if (ex.t !== 'orm') return null;
-  const orm = state.orm[ex.key] || 0;
+  const orm = (state.orm[state.activePlanId] || {})[ex.key] || 0;
   if (!orm) return null;
-  const factors = ex.f === 'ok' ? OK_F : PPB_F;
+  const factors = getActivePlan().factorTables[ex.f];
   const f = factors[weekIdx];
   return mround(orm * f, 2.5);
 }
@@ -1101,8 +1158,9 @@ function showView(name) {
 // ═══════════════════════════════════════════════════════════
 
 function renderPlan() {
+  const plan = getActivePlan();
   const wi = state.planWeek;
-  const week = WEEKS[wi];
+  const week = plan.weeks[wi];
 
   // sub-label
   document.getElementById('plan-sub').textContent = week.name;
@@ -1111,7 +1169,7 @@ function renderPlan() {
 
   // week pills
   const pillsEl = document.getElementById('week-pills');
-  pillsEl.innerHTML = WEEKS.map(w => `
+  pillsEl.innerHTML = plan.weeks.map(w => `
     <button class="week-pill ${w.idx === wi ? 'active' : ''}"
       onclick="setPlanWeek(${w.idx})">
       <span class="wnum">W${w.idx+1}</span>${w.name}
@@ -1120,11 +1178,11 @@ function renderPlan() {
 
   // session cards grid
   const sessionsEl = document.getElementById('plan-sessions');
-  const color = (k) => SESSION_COLORS[k];
+  const color = (k) => plan.sessionColors[k];
 
   // Grid of cards
   let html = `<div class="session-grid">`;
-  SESSION_ORDER.forEach(key => {
+  plan.sessionOrder.forEach(key => {
     const done = isDoneToday(key);
     const sets = totalSets(key, wi);
     const exCount = getEffectiveSession(key).length;
@@ -1150,7 +1208,7 @@ function renderPlan() {
 
   // Session detail blocks (collapsed by default)
   html += `<div class="plan-detail">`;
-  SESSION_ORDER.forEach(key => {
+  plan.sessionOrder.forEach(key => {
     const exs = getEffectiveSession(key);
     html += `
       <div class="session-block" id="block-${key.replace(' ','-')}">
@@ -1243,7 +1301,7 @@ function startWorkout(sessionKey) {
   state.activeWorkout = {
     sessionKey,
     weekIdx: wi,
-    weekName: WEEKS[wi].name,
+    weekName: getActivePlan().weeks[wi].name,
     exercises,
     startedAt: Date.now(),
   };
@@ -1253,6 +1311,7 @@ function startWorkout(sessionKey) {
 }
 
 function renderWorkout() {
+  const plan = getActivePlan();
   const container = document.getElementById('workout-container');
   if (!state.activeWorkout) {
     // Show session picker
@@ -1266,11 +1325,11 @@ function renderWorkout() {
       </div>
       <div class="no-workout-state">
         <div class="nw-week-label">
-          Woche ${wi+1} · ${WEEKS[wi].name}
+          Woche ${wi+1} · ${plan.weeks[wi].name}
         </div>
         <div class="nw-session-list">
     `;
-    SESSION_ORDER.forEach(key => {
+    plan.sessionOrder.forEach(key => {
       const sets = totalSets(key, wi);
       const exCount = getEffectiveSession(key).length;
       const done = isDoneToday(key);
@@ -1278,7 +1337,7 @@ function renderWorkout() {
         <div class="nw-session-btn" onclick="startWorkoutFromCurrent('${key}')"
           style="${done ? 'opacity:0.5' : ''}">
           <div style="display:flex; align-items:center">
-            <div class="dot" style="background:${SESSION_COLORS[key]}"></div>
+            <div class="dot" style="background:${plan.sessionColors[key]}"></div>
             <div>
               <div class="s-name">${key}</div>
               <div class="s-meta">${exCount} Übungen · ${sets} Sätze${done ? ' · ✓ heute erledigt' : ''}</div>
@@ -1335,7 +1394,7 @@ function renderWorkout() {
 
   wk.exercises.forEach((ex, exIdx) => {
     const allDone = ex.sets.every(s => s.done);
-    const color = SESSION_COLORS[wk.sessionKey];
+    const color = plan.sessionColors[wk.sessionKey];
     html += `
       <div class="wk-exercise">
         <div class="wk-ex-header">
@@ -1550,7 +1609,7 @@ function renderStats() {
   html += `<div class="section-label" style="margin-top:8px;margin-bottom:10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2)">Letzte Trainings</div>`;
 
   state.logs.slice(0, 20).forEach(log => {
-    const color = SESSION_COLORS[log.session] || '#888';
+    const color = getActivePlan().sessionColors[log.session] || '#888';
     html += `
       <div class="log-entry">
         <div>
@@ -1576,13 +1635,32 @@ function updateBodyWeight(val) {
 }
 
 function renderSetup() {
+  const plan = getActivePlan();
+
+  // Plan selector
+  const planEl = document.getElementById('plan-selector');
+  planEl.innerHTML = Object.values(PLANS).map(p => `
+    <button
+      onclick="selectPlan('${p.id}')"
+      style="
+        padding: 8px 14px;
+        border-radius: 20px;
+        border: 1px solid ${p.id === state.activePlanId ? 'var(--accent)' : 'var(--border)'};
+        background: ${p.id === state.activePlanId ? 'var(--accent)' : 'var(--surface2)'};
+        color: ${p.id === state.activePlanId ? '#fff' : 'var(--text2)'};
+        font-size: 12px; font-weight: 600; cursor: pointer;
+      ">
+      ${p.name}
+    </button>
+  `).join('');
+
   // Body weight
   const bwEl = document.getElementById('body-weight-input');
   if (bwEl) bwEl.value = state.bodyWeightKg || 80;
 
   // ORM inputs
   const ormEl = document.getElementById('orm-inputs');
-  ormEl.innerHTML = ORM_KEYS.map(o => `
+  ormEl.innerHTML = plan.ormKeys.map(o => `
     <div class="orm-row">
       <div>
         <div class="orm-ex-name">${o.name}</div>
@@ -1590,7 +1668,7 @@ function renderSetup() {
       </div>
       <div class="orm-input-wrap">
         <input class="orm-input" type="number" inputmode="decimal"
-          value="${state.orm[o.key] || ''}" placeholder="0"
+          value="${state.orm[state.activePlanId][o.key] || ''}" placeholder="0"
           id="orm-${o.key}"
           onchange="updateOrm('${o.key}', this.value)"
           onfocus="this.select()">
@@ -1601,7 +1679,7 @@ function renderSetup() {
 
   // Week selector
   const weekEl = document.getElementById('week-selector');
-  weekEl.innerHTML = WEEKS.map(w => `
+  weekEl.innerHTML = plan.weeks.map(w => `
     <button
       onclick="setCurrentWeek(${w.idx})"
       style="
@@ -1617,9 +1695,23 @@ function renderSetup() {
   `).join('');
 }
 
+function selectPlan(planId) {
+  if (planId === state.activePlanId) return;
+  if (state.activeWorkout) {
+    showToast('Bitte laufendes Training zuerst beenden');
+    return;
+  }
+  state.activePlanId = planId;
+  if (!state.orm[planId]) state.orm[planId] = {};
+  saveState();
+  renderSetup();
+  renderPlan();
+  showToast(`Plan gewechselt: ${PLANS[planId].name}`);
+}
+
 function updateOrm(key, val) {
   const v = parseFloat(val);
-  state.orm[key] = isNaN(v) ? 0 : v;
+  state.orm[state.activePlanId][key] = isNaN(v) ? 0 : v;
   saveState();
   showToast('Gespeichert');
 }
@@ -1629,7 +1721,7 @@ function setCurrentWeek(idx) {
   state.planWeek = idx;
   saveState();
   renderSetup();
-  showToast(`Woche ${idx+1} · ${WEEKS[idx].name}`);
+  showToast(`Woche ${idx+1} · ${getActivePlan().weeks[idx].name}`);
 }
 
 function clearLogs() {
@@ -1690,7 +1782,7 @@ function closeModal() {
 
 function renderSessionEditModal() {
   const exs = getEffectiveSession(modalSession);
-  const isModified = !!(state.sessionMods && state.sessionMods[modalSession]);
+  const isModified = !!(state.sessionMods && state.sessionMods[state.activePlanId] && state.sessionMods[state.activePlanId][modalSession]);
 
   let html = `<div class="session-block" style="margin:0 0 16px;border-radius:14px;overflow:hidden">`;
   exs.forEach((ex, i) => {
@@ -1726,7 +1818,7 @@ function renderSessionEditModal() {
 function moveExercise(exIdx, dir) {
   if (!modalSession) return;
   initSessionMod(modalSession);
-  const exs = state.sessionMods[modalSession];
+  const exs = state.sessionMods[state.activePlanId][modalSession];
   const newIdx = exIdx + dir;
   if (newIdx < 0 || newIdx >= exs.length) return;
   const tmp = exs[exIdx];
@@ -1739,7 +1831,7 @@ function moveExercise(exIdx, dir) {
 function deleteExerciseFromSession(exIdx) {
   if (!modalSession) return;
   initSessionMod(modalSession);
-  state.sessionMods[modalSession].splice(exIdx, 1);
+  state.sessionMods[state.activePlanId][modalSession].splice(exIdx, 1);
   saveState();
   renderSessionEditModal();
 }
@@ -1747,7 +1839,7 @@ function deleteExerciseFromSession(exIdx) {
 function resetSessionToDefault() {
   if (!modalSession) return;
   if (!confirm('Alle Änderungen für ' + modalSession + ' zurücksetzen?')) return;
-  if (state.sessionMods) delete state.sessionMods[modalSession];
+  if (state.sessionMods && state.sessionMods[state.activePlanId]) delete state.sessionMods[state.activePlanId][modalSession];
   saveState();
   renderSessionEditModal();
 }
@@ -1758,7 +1850,7 @@ function showAddExerciseForm() {
     'Brust','Rücken','Quads','Hamstrings','Mittlere Schulter','Hintere Schulter',
     'Trizeps','Bizeps','Trapez','Waden','Bauch','Gesäß','Unterarme','Andere'
   ].map(m => `<option value="${m}">${m}</option>`).join('');
-  const ormOptions = ORM_KEYS.map(o => `<option value="${o.key}">${o.name}</option>`).join('');
+  const ormOptions = getActivePlan().ormKeys.map(o => `<option value="${o.key}">${o.name}</option>`).join('');
 
   document.getElementById('modal-body').innerHTML = `
     <div>
@@ -1839,7 +1931,7 @@ function submitAddExercise() {
     ex = { name, muscle, t: 'rir', rir: [rir,rir,rir,rir,rir], sets: setsArr, reps };
   }
   initSessionMod(modalSession);
-  state.sessionMods[modalSession].push(ex);
+  state.sessionMods[state.activePlanId][modalSession].push(ex);
   saveState();
   showToast('Übung hinzugefügt ✓');
   renderSessionEditModal();
