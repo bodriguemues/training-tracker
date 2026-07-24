@@ -841,6 +841,8 @@
       color: var(--text2);
     }
     .fifa-bracket-score.win { color: var(--green); }
+    /* Tourney list row hover */
+    .card [onclick]:hover { background: var(--surface2); }
   </style>
 </head>
 <body>
@@ -2135,6 +2137,7 @@ function submitAddExercise() {
 //  FIFA TURNIER
 // ═══════════════════════════════════════════════════════════
 
+// ─ TEAMS ────────────────────────────────────────────────────
 const FIFA_TEAMS = [
   {name:'Deutschland',   flag:'🇩🇪'},
   {name:'Frankreich',    flag:'🇫🇷'},
@@ -2170,22 +2173,57 @@ const FIFA_TEAMS = [
   {name:'Ungarn',        flag:'🇭🇺'},
 ];
 
-let fs = {};
+// ─ STATE ───────────────────────────────────────────────────
+let fifaTournaments = []; // array of all tournaments
+let fifaCurrentId = null; // id of open tournament (null = overview)
+let fs = null;            // shorthand: active tournament object
 
 function fifaLoad() {
   try {
-    const s = localStorage.getItem('fifaState');
-    if (s) { fs = JSON.parse(s); return; }
+    const raw = localStorage.getItem('fifaData');
+    if (raw) {
+      const d = JSON.parse(raw);
+      fifaTournaments = d.tournaments || [];
+      fifaCurrentId = null; // always start at overview
+      fs = null;
+      return;
+    }
+    // Migrate legacy single-tournament state
+    const old = localStorage.getItem('fifaState');
+    if (old) {
+      const o = JSON.parse(old);
+      if (o && o.phase) {
+        o.id = 'legacy_' + Date.now();
+        o.name = 'Turnier 1';
+        o.createdAt = Date.now();
+        fifaTournaments = [o];
+        localStorage.removeItem('fifaState');
+      }
+    }
   } catch(e) {}
-  fifaNew();
+  fifaCurrentId = null;
+  fs = null;
+  fifaSaveAll();
 }
 
-function fifaSave() {
-  localStorage.setItem('fifaState', JSON.stringify(fs));
+function fifaSaveAll() {
+  // Sync fs back into array before saving
+  if (fs && fifaCurrentId) {
+    const idx = fifaTournaments.findIndex(t => t.id === fifaCurrentId);
+    if (idx >= 0) fifaTournaments[idx] = fs;
+  }
+  localStorage.setItem('fifaData', JSON.stringify({tournaments: fifaTournaments}));
 }
 
-function fifaNew() {
-  fs = {
+// Alias so existing code still works
+function fifaSave() { fifaSaveAll(); }
+
+function fifaNewTournament() {
+  const id = 'fifa_' + Date.now();
+  const num = fifaTournaments.length + 1;
+  const t = {
+    id, name: 'Turnier ' + num,
+    createdAt: Date.now(),
     phase: 'setup',
     mode: 'liga',
     playerCount: 4,
@@ -2194,8 +2232,40 @@ function fifaNew() {
     matches: [],
     currentMatch: 0
   };
-  fifaSave();
+  fifaTournaments.push(t);
+  fifaCurrentId = id;
+  fs = t;
+  fifaSaveAll();
+  renderFifa();
 }
+
+function fifaOpenTournament(id) {
+  const t = fifaTournaments.find(x => x.id === id);
+  if (!t) return;
+  fifaCurrentId = id;
+  fs = t;
+  renderFifa();
+}
+
+function fifaDeleteTournament(id) {
+  fifaTournaments = fifaTournaments.filter(t => t.id !== id);
+  if (fifaCurrentId === id) { fifaCurrentId = null; fs = null; }
+  fifaSaveAll();
+  renderFifa();
+}
+
+function fifaBackToOverview() {
+  fifaCurrentId = null;
+  fs = null;
+  renderFifa();
+}
+
+function fifaSetTournamentName(v) {
+  if (fs) { fs.name = v; fifaSave(); }
+}
+
+// Keep fifaNew for internal compat (just goes back to overview now)
+function fifaNew() { fifaBackToOverview(); }
 
 function generateRoundRobin(n) {
   const matches = [];
@@ -2339,9 +2409,61 @@ function fifaSetTeam(i, v) { fs.setupPlayers[i].teamIdx = parseInt(v); fifaSave(
 function renderFifa() {
   const root = document.getElementById('fifa-root');
   if (!root) return;
-  root.innerHTML = fs.phase === 'setup'
-    ? buildFifaSetup()
-    : (fs.mode === 'liga' ? buildFifaLiga() : buildFifaKO());
+  if (!fifaCurrentId || !fs) {
+    root.innerHTML = buildFifaOverview();
+  } else if (fs.phase === 'setup') {
+    root.innerHTML = buildFifaSetup();
+  } else {
+    root.innerHTML = fs.mode === 'liga' ? buildFifaLiga() : buildFifaKO();
+  }
+}
+
+function buildFifaOverview() {
+  let list = '';
+  if (fifaTournaments.length === 0) {
+    list = `<div style="text-align:center;color:var(--text2);padding:40px 16px">
+      <div style="font-size:52px;margin-bottom:12px">⚽</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:6px">Noch kein Turnier</div>
+      <div style="font-size:13px">Erstelle dein erstes Turnier</div>
+    </div>`;
+  } else {
+    list = `<div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">`;
+    fifaTournaments.forEach((t, i) => {
+      const date = new Date(t.createdAt).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'2-digit'});
+      const played = (t.matches || []).filter(m => m.played).length;
+      const total  = (t.matches || []).length;
+      const status = t.phase === 'setup'
+        ? '<span style="color:var(--blue)">Setup</span>'
+        : played === total && total > 0
+          ? '<span style="color:var(--green)">✅ Abgeschlossen</span>'
+          : `<span style="color:var(--orange)">${played}/${total} Spiele</span>`;
+      const modeLabel = t.mode === 'liga' ? '⚽ Liga' : '🏆 K.O.';
+      const border = i < fifaTournaments.length - 1 ? 'border-bottom:1px solid var(--border)' : '';
+      list += `<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;${border}"
+          onclick="fifaOpenTournament('${t.id}')">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;font-weight:700">${t.name}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">${modeLabel} · ${(t.players||t.setupPlayers||[]).length ? (t.players.length||t.playerCount) : t.playerCount} Spieler · ${date}</div>
+          <div style="font-size:12px;margin-top:2px">${status}</div>
+        </div>
+        <button class="icon-btn" style="flex-shrink:0;padding:8px"
+            onclick="event.stopPropagation();if(confirm('\"${t.name}\" löschen?'))fifaDeleteTournament('${t.id}')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
+          </svg>
+        </button>
+      </div>`;
+    });
+    list += `</div>`;
+  }
+  return `<div class="topbar">
+    <div><div class="topbar-title">⚽ FIFA Turniere</div>
+    <div class="topbar-sub">${fifaTournaments.length} Turnier${fifaTournaments.length!==1?'e':''}</div></div>
+  </div>
+  ${list}
+  <button class="btn btn-primary" onclick="fifaNewTournament()">✚ Neues Turnier erstellen</button>`;
 }
 
 function buildFifaSetup() {
@@ -2368,10 +2490,16 @@ function buildFifaSetup() {
       <select class="fifa-team-select" onchange="fifaSetTeam(${i},this.value)">${opts}</select>
     </div>`;
   }
-  return `<div class="topbar"><div>
-    <div class="topbar-title">⚽ FIFA Turnier</div>
-    <div class="topbar-sub">Turnier einrichten</div>
-  </div></div>
+  return `<div class="topbar">
+    <button class="icon-btn" onclick="fifaBackToOverview()" style="margin-right:10px">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div style="flex:1">
+      <input class="fifa-name-input" style="background:transparent;border:none;font-size:18px;font-weight:800;padding:0;color:var(--text)"
+        value="${fs.name}" oninput="fifaSetTournamentName(this.value)" maxlength="30">
+      <div class="topbar-sub">Turnier einrichten</div>
+    </div>
+  </div>
   <div class="setup-section"><div class="section-label">Modus</div>
     <div style="display:flex;gap:8px;margin-top:8px">${modeBtns}</div>
   </div>
@@ -2460,11 +2588,13 @@ function buildFifaLiga() {
   }).join('');
 
   return `<div class="topbar">
-    <div><div class="topbar-title">⚽ Liga</div>
-    <div class="topbar-sub">${done} / ${total} Spiele gespielt</div></div>
-    <button class="icon-btn" onclick="if(confirm('Neues Turnier starten?')){fifaNew();renderFifa();}" title="Neu">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+    <button class="icon-btn" onclick="fifaBackToOverview()" style="margin-right:10px">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
+    <div style="flex:1">
+      <div class="topbar-title">${fs.name}</div>
+      <div class="topbar-sub">⚽ Liga · ${done}/${total} Spiele</div>
+    </div>
   </div>
   ${matchCard}
   <div class="section-label" style="margin-bottom:8px">Tabelle</div>
@@ -2552,11 +2682,13 @@ function buildFifaKO() {
   });
 
   return `<div class="topbar">
-    <div><div class="topbar-title">🏆 K.O. Turnier</div>
-    <div class="topbar-sub">${players.length} Teams</div></div>
-    <button class="icon-btn" onclick="if(confirm('Neues Turnier starten?')){fifaNew();renderFifa();}" title="Neu">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+    <button class="icon-btn" onclick="fifaBackToOverview()" style="margin-right:10px">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
+    <div style="flex:1">
+      <div class="topbar-title">${fs.name}</div>
+      <div class="topbar-sub">🏆 K.O. · ${players.length} Teams</div>
+    </div>
   </div>
   ${matchCard}
   <div class="section-label" style="margin-bottom:8px">Bracket</div>
