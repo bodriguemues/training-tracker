@@ -657,6 +657,190 @@
       cursor: pointer;
     }
     .type-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ─── FIFA SECTION ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .icon-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 10px;
+      cursor: pointer;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+    }
+    .icon-btn:active { opacity: 0.7; }
+    .fifa-player-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .fifa-player-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .fifa-name-input {
+      flex: 1; min-width: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      padding: 8px 10px;
+      outline: none;
+    }
+    .fifa-name-input:focus { border-color: var(--accent); }
+    .fifa-team-select {
+      flex: 1.2; min-width: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 12px;
+      padding: 8px 6px;
+      outline: none;
+    }
+    .fifa-match-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .fifa-match-label {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .fifa-vs-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fifa-team-block {
+      flex: 1;
+      text-align: center;
+    }
+    .fifa-flag { font-size: 36px; line-height: 1; margin-bottom: 4px; }
+    .fifa-team-name { font-size: 11px; color: var(--text2); }
+    .fifa-player-name { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .fifa-score-inputs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fifa-score-input {
+      width: 54px; height: 54px;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 26px; font-weight: 700;
+      text-align: center;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .fifa-score-input::-webkit-inner-spin-button,
+    .fifa-score-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .fifa-score-input:focus { border-color: var(--accent); }
+    .fifa-colon { font-size: 28px; font-weight: 700; color: var(--text2); }
+    .fifa-winner-card {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(230,57,70,0.15) 100%);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .fifa-winner-name { font-size: 24px; font-weight: 800; margin: 10px 0 4px; }
+    .fifa-winner-team { font-size: 16px; color: var(--text2); }
+    .fifa-winner-points { font-size: 13px; color: var(--yellow); margin-top: 8px; }
+    .fifa-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .fifa-table th {
+      color: var(--text2); font-weight: 600;
+      padding: 10px 5px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; text-transform: uppercase;
+    }
+    .fifa-table th:nth-child(2) { text-align: left; }
+    .fifa-table td {
+      padding: 10px 5px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .fifa-table td:nth-child(2) { text-align: left; }
+    .fifa-table tr:last-child td { border-bottom: none; }
+    .fifa-table tbody tr:hover td { background: var(--surface2); }
+    .fifa-history-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .fifa-history-row:last-child { border-bottom: none; }
+    .fifa-result-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-weight: 700; font-size: 14px;
+      min-width: 56px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .fifa-round-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      font-weight: 700;
+      margin: 14px 0 6px;
+    }
+    .fifa-round-label:first-child { margin-top: 0; }
+    .fifa-bracket-match {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .fifa-bracket-team {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .fifa-bracket-team:last-child { border-bottom: none; }
+    .fifa-bracket-team.winner { background: rgba(74,222,128,0.1); }
+    .fifa-bracket-score {
+      margin-left: auto;
+      font-weight: 600; font-size: 15px;
+      color: var(--text2);
+    }
+    .fifa-bracket-score.win { color: var(--green); }
   </style>
 </head>
 <body>
@@ -774,6 +958,11 @@
   </div>
 </div>
 
+<!-- ══════════════════════ FIFA ══════════════════════ -->
+<div id="view-fifa" class="view">
+  <div id="fifa-root"></div>
+</div>
+
 <!-- ══════════════════════ NAV ══════════════════════ -->
 <nav class="nav">
   <button class="nav-btn active" id="nav-plan" onclick="showView('plan')">
@@ -787,6 +976,10 @@
   <button class="nav-btn" id="nav-stats" onclick="showView('stats')">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     Stats
+  </button>
+  <button class="nav-btn" id="nav-fifa" onclick="showView('fifa')">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20M12 2a10 10 0 0 0 0 20M2 12h20M12 2c-2.5 3-4 6.5-4 10s1.5 7 4 10M12 2c2.5 3 4 6.5 4 10s-1.5 7-4 10"/></svg>
+    FIFA
   </button>
   <button class="nav-btn" id="nav-setup" onclick="showView('setup')">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 1 21 12a10 10 0 0 1-2 6M4.93 4.93A10 10 0 0 0 3 12a10 10 0 0 0 2 6"/><path d="M8 12a4 4 0 0 1 4-4 4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4"/></svg>
@@ -1151,6 +1344,7 @@ function showView(name) {
   if (name === 'workout') renderWorkout();
   if (name === 'stats') renderStats();
   if (name === 'setup') renderSetup();
+  if (name === 'fifa') renderFifa();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1938,10 +2132,450 @@ function submitAddExercise() {
 }
 
 // ═══════════════════════════════════════════════════════════
+//  FIFA TURNIER
+// ═══════════════════════════════════════════════════════════
+
+const FIFA_TEAMS = [
+  {name:'Deutschland',   flag:'🇩🇪'},
+  {name:'Frankreich',    flag:'🇫🇷'},
+  {name:'Spanien',       flag:'🇪🇸'},
+  {name:'England',       flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
+  {name:'Brasilien',     flag:'🇧🇷'},
+  {name:'Argentinien',   flag:'🇦🇷'},
+  {name:'Portugal',      flag:'🇵🇹'},
+  {name:'Niederlande',   flag:'🇳🇱'},
+  {name:'Italien',       flag:'🇮🇹'},
+  {name:'Belgien',       flag:'🇧🇪'},
+  {name:'Kroatien',      flag:'🇭🇷'},
+  {name:'Marokko',       flag:'🇲🇦'},
+  {name:'Japan',         flag:'🇯🇵'},
+  {name:'USA',           flag:'🇺🇸'},
+  {name:'Mexiko',        flag:'🇲🇽'},
+  {name:'Türkei',        flag:'🇹🇷'},
+  {name:'Uruguay',       flag:'🇺🇾'},
+  {name:'Schweiz',       flag:'🇨🇭'},
+  {name:'Österreich',    flag:'🇦🇹'},
+  {name:'Dänemark',      flag:'🇩🇰'},
+  {name:'Schweden',      flag:'🇸🇪'},
+  {name:'Polen',         flag:'🇵🇱'},
+  {name:'Senegal',       flag:'🇸🇳'},
+  {name:'Australien',    flag:'🇦🇺'},
+  {name:'Südkorea',      flag:'🇰🇷'},
+  {name:'Kamerun',       flag:'🇨🇲'},
+  {name:'Serbien',       flag:'🇷🇸'},
+  {name:'Ukraine',       flag:'🇺🇦'},
+  {name:'Griechenland',  flag:'🇬🇷'},
+  {name:'Saudi-Arabien', flag:'🇸🇦'},
+  {name:'Tschechien',    flag:'🇨🇿'},
+  {name:'Ungarn',        flag:'🇭🇺'},
+];
+
+let fs = {};
+
+function fifaLoad() {
+  try {
+    const s = localStorage.getItem('fifaState');
+    if (s) { fs = JSON.parse(s); return; }
+  } catch(e) {}
+  fifaNew();
+}
+
+function fifaSave() {
+  localStorage.setItem('fifaState', JSON.stringify(fs));
+}
+
+function fifaNew() {
+  fs = {
+    phase: 'setup',
+    mode: 'liga',
+    playerCount: 4,
+    setupPlayers: Array.from({length: 8}, (_, i) => ({name: '', teamIdx: i})),
+    players: [],
+    matches: [],
+    currentMatch: 0
+  };
+  fifaSave();
+}
+
+function generateRoundRobin(n) {
+  const matches = [];
+  for (let i = 0; i < n; i++)
+    for (let j = i + 1; j < n; j++)
+      matches.push({home: i, away: j, homeGoals: null, awayGoals: null, played: false});
+  return matches;
+}
+
+function generateKOBracket(players) {
+  const n = players.length;
+  const matches = [];
+  // Shuffle seeding
+  const order = [...Array(n).keys()];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  const totalRounds = Math.log2(n);
+  // Round 1 with seeded matchups
+  for (let i = 0; i < n / 2; i++)
+    matches.push({round:1, slot:i, home:order[i], away:order[n-1-i],
+      homeGoals:null, awayGoals:null, homePen:null, awayPen:null, played:false, winner:null});
+  // Subsequent rounds
+  for (let r = 2; r <= totalRounds; r++) {
+    const cnt = Math.pow(2, totalRounds - r);
+    for (let i = 0; i < cnt; i++)
+      matches.push({round:r, slot:i, home:null, away:null,
+        homeGoals:null, awayGoals:null, homePen:null, awayPen:null, played:false, winner:null});
+  }
+  return matches;
+}
+
+function resolveKO(matches) {
+  const rounds = [...new Set(matches.map(m => m.round))].sort((a,b) => a-b);
+  for (let ri = 1; ri < rounds.length; ri++) {
+    const prev = matches.filter(m => m.round === rounds[ri-1]).sort((a,b) => a.slot-b.slot);
+    const curr = matches.filter(m => m.round === rounds[ri]).sort((a,b) => a.slot-b.slot);
+    if (!prev.every(m => m.played)) continue;
+    curr.forEach((m, i) => {
+      if (m.home === null) {
+        m.home = prev[i*2].winner;
+        m.away = prev[i*2+1].winner;
+      }
+    });
+  }
+}
+
+function calcTable(players, matches) {
+  const t = players.map((p, i) => ({
+    idx: i, name: p.name, team: p.team, flag: p.flag,
+    played:0, wins:0, draws:0, losses:0, gf:0, ga:0
+  }));
+  matches.filter(m => m.played).forEach(m => {
+    const h = t[m.home], a = t[m.away];
+    h.played++; a.played++;
+    h.gf += m.homeGoals; h.ga += m.awayGoals;
+    a.gf += m.awayGoals; a.ga += m.homeGoals;
+    if (m.homeGoals > m.awayGoals)       { h.wins++; a.losses++; }
+    else if (m.homeGoals < m.awayGoals)  { a.wins++; h.losses++; }
+    else                                  { h.draws++; a.draws++; }
+  });
+  return t.sort((a, b) => {
+    const pa = a.wins*3+a.draws, pb = b.wins*3+b.draws;
+    if (pb !== pa) return pb - pa;
+    const da = a.gf-a.ga, db = b.gf-b.ga;
+    if (db !== da) return db - da;
+    return b.gf - a.gf;
+  });
+}
+
+function fifaStartTournament() {
+  const n = fs.playerCount;
+  const sp = fs.setupPlayers.slice(0, n);
+  for (let i = 0; i < n; i++) {
+    if (!sp[i].name.trim()) { showToast('Spieler ' + (i+1) + ': Name fehlt!'); return; }
+  }
+  const idxs = sp.map(p => p.teamIdx);
+  if (new Set(idxs).size !== idxs.length) { showToast('Jedes Team nur 1x!'); return; }
+  if (fs.mode === 'ko' && ![2,4,8].includes(n)) { showToast('K.O. benötigt 2, 4 oder 8 Spieler!'); return; }
+  fs.players = sp.map(p => ({
+    name: p.name.trim(),
+    team: FIFA_TEAMS[p.teamIdx].name,
+    flag: FIFA_TEAMS[p.teamIdx].flag,
+    teamIdx: p.teamIdx
+  }));
+  fs.matches = fs.mode === 'liga' ? generateRoundRobin(n) : generateKOBracket(fs.players);
+  fs.phase = 'tournament';
+  fs.currentMatch = 0;
+  fifaSave();
+  renderFifa();
+}
+
+function fifaSaveScore() {
+  const hEl = document.getElementById('score-home');
+  const aEl = document.getElementById('score-away');
+  const hg = parseInt(hEl?.value);
+  const ag = parseInt(aEl?.value);
+  if (isNaN(hg) || isNaN(ag) || hg < 0 || ag < 0) { showToast('Gültige Tore eingeben!'); return; }
+  const m = fs.mode === 'ko'
+    ? fs.matches.find(x => !x.played && x.home !== null)
+    : fs.matches[fs.currentMatch];
+  if (!m) return;
+  m.homeGoals = hg; m.awayGoals = ag; m.played = true;
+  if (fs.mode === 'ko') {
+    if (hg !== ag) {
+      m.winner = hg > ag ? m.home : m.away;
+    } else {
+      const hp = parseInt(document.getElementById('pen-home')?.value);
+      const ap = parseInt(document.getElementById('pen-away')?.value);
+      if (isNaN(hp) || isNaN(ap) || hp === ap) {
+        m.played = false; m.homeGoals = null; m.awayGoals = null;
+        showToast('Elfmeter eingeben (kein Unentschieden)!'); return;
+      }
+      m.homePen = hp; m.awayPen = ap;
+      m.winner = hp > ap ? m.home : m.away;
+    }
+    resolveKO(fs.matches);
+  } else {
+    const next = fs.matches.findIndex((x, i) => i > fs.currentMatch && !x.played);
+    fs.currentMatch = next >= 0 ? next : fs.matches.length;
+  }
+  fifaSave();
+  renderFifa();
+  showToast('Ergebnis gespeichert ⚽');
+}
+
+function fifaUpdateCount(n) {
+  fs.playerCount = n;
+  fifaSave(); renderFifa();
+}
+
+function fifaUpdateMode(mode) {
+  fs.mode = mode;
+  fifaSave(); renderFifa();
+}
+
+function fifaSetName(i, v) { fs.setupPlayers[i].name = v; fifaSave(); }
+function fifaSetTeam(i, v) { fs.setupPlayers[i].teamIdx = parseInt(v); fifaSave(); }
+
+function renderFifa() {
+  const root = document.getElementById('fifa-root');
+  if (!root) return;
+  root.innerHTML = fs.phase === 'setup'
+    ? buildFifaSetup()
+    : (fs.mode === 'liga' ? buildFifaLiga() : buildFifaKO());
+}
+
+function buildFifaSetup() {
+  const n = fs.playerCount;
+  const countPills = [2,3,4,5,6,7,8].map(x =>
+    `<button class="week-pill${n===x?' active':''}" onclick="fifaUpdateCount(${x})">${x}</button>`
+  ).join('');
+  const modeBtns = [
+    {k:'liga', l:'⚽ Liga (Jeder vs. Jeden)'},
+    {k:'ko',   l:'🏆 K.O. Turnier'}
+  ].map(({k,l}) =>
+    `<button class="type-btn${fs.mode===k?' active':''}" onclick="fifaUpdateMode('${k}')">${l}</button>`
+  ).join('');
+  let rows = '';
+  for (let i = 0; i < n; i++) {
+    const p = fs.setupPlayers[i] || {name:'', teamIdx:i};
+    const opts = FIFA_TEAMS.map((t,ti) =>
+      `<option value="${ti}"${ti===p.teamIdx?' selected':''}>${t.flag} ${t.name}</option>`
+    ).join('');
+    rows += `<div class="fifa-player-row">
+      <div class="fifa-player-num">${i+1}</div>
+      <input class="fifa-name-input" type="text" placeholder="Name" value="${p.name.replace(/"/g,'&quot;')}"
+        oninput="fifaSetName(${i},this.value)" maxlength="18">
+      <select class="fifa-team-select" onchange="fifaSetTeam(${i},this.value)">${opts}</select>
+    </div>`;
+  }
+  return `<div class="topbar"><div>
+    <div class="topbar-title">⚽ FIFA Turnier</div>
+    <div class="topbar-sub">Turnier einrichten</div>
+  </div></div>
+  <div class="setup-section"><div class="section-label">Modus</div>
+    <div style="display:flex;gap:8px;margin-top:8px">${modeBtns}</div>
+  </div>
+  <div class="setup-section"><div class="section-label">Spieleranzahl</div>
+    <div class="week-scroll" style="margin-bottom:0;margin-top:8px">${countPills}</div>
+  </div>
+  <div class="setup-section"><div class="section-label">Spieler &amp; Teams</div>
+    <div style="margin-top:12px">${rows}</div>
+  </div>
+  <button class="btn btn-primary" onclick="fifaStartTournament()" style="margin-top:4px">
+    🏆 Turnier starten
+  </button>`;
+}
+
+function buildFifaLiga() {
+  const {players, matches} = fs;
+  const table = calcTable(players, matches);
+  const done = matches.filter(m => m.played).length;
+  const total = matches.length;
+  const allDone = done === total;
+
+  let matchCard = '';
+  if (!allDone && fs.currentMatch < total) {
+    const m = matches[fs.currentMatch];
+    const hp = players[m.home], ap = players[m.away];
+    matchCard = `<div class="fifa-match-card">
+      <div class="fifa-match-label">Spiel ${done+1} von ${total}</div>
+      <div class="fifa-vs-row">
+        <div class="fifa-team-block">
+          <div class="fifa-flag">${hp.flag}</div>
+          <div class="fifa-team-name">${hp.team}</div>
+          <div class="fifa-player-name">${hp.name}</div>
+        </div>
+        <div class="fifa-score-inputs">
+          <input id="score-home" type="number" inputmode="numeric" min="0" max="99" value="0" class="fifa-score-input">
+          <div class="fifa-colon">:</div>
+          <input id="score-away" type="number" inputmode="numeric" min="0" max="99" value="0" class="fifa-score-input">
+        </div>
+        <div class="fifa-team-block">
+          <div class="fifa-flag">${ap.flag}</div>
+          <div class="fifa-team-name">${ap.team}</div>
+          <div class="fifa-player-name">${ap.name}</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="fifaSaveScore()" style="margin-top:12px">✓ Ergebnis speichern</button>
+    </div>`;
+  } else if (allDone) {
+    const w = table[0];
+    matchCard = `<div class="fifa-winner-card">
+      <div style="font-size:52px">🏆</div>
+      <div class="fifa-winner-name">${w.name}</div>
+      <div class="fifa-winner-team">${w.flag} ${w.team}</div>
+      <div class="fifa-winner-points">${w.wins*3+w.draws} Pkt · ${w.wins}S ${w.draws}U ${w.losses}N</div>
+    </div>`;
+  }
+
+  const tableRows = table.map((r, rank) => {
+    const medal = rank===0?'color:var(--yellow);font-weight:800':rank===1?'color:#aaa':rank===2?'color:#cd7f32':'';
+    const diff = r.gf - r.ga;
+    const pts = r.wins*3+r.draws;
+    return `<tr>
+      <td style="${medal}">${rank+1}</td>
+      <td><div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:18px">${r.flag}</span>
+        <div><div style="font-size:12px;font-weight:600">${r.name}</div>
+        <div style="font-size:10px;color:var(--text2)">${r.team}</div></div>
+      </div></td>
+      <td>${r.played}</td>
+      <td style="color:var(--green)">${r.wins}</td>
+      <td>${r.draws}</td>
+      <td style="color:var(--accent)">${r.losses}</td>
+      <td>${r.gf}:${r.ga}</td>
+      <td style="color:${diff>0?'var(--green)':diff<0?'var(--accent)':'var(--text2)'}">${diff>0?'+':''}${diff}</td>
+      <td style="font-weight:800;font-size:14px">${pts}</td>
+    </tr>`;
+  }).join('');
+
+  const history = matches.filter(m => m.played).slice().reverse().map(m => {
+    const hp = players[m.home], ap = players[m.away];
+    const hw = m.homeGoals > m.awayGoals, aw = m.awayGoals > m.homeGoals;
+    return `<div class="fifa-history-row">
+      <span style="flex:1;text-align:right;font-size:12px${hw?';font-weight:700;color:var(--text)':';color:var(--text2)'}">${hp.flag} ${hp.name}</span>
+      <span class="fifa-result-badge">${m.homeGoals}:${m.awayGoals}</span>
+      <span style="flex:1;text-align:left;font-size:12px${aw?';font-weight:700;color:var(--text)':';color:var(--text2)'}">${ap.name} ${ap.flag}</span>
+    </div>`;
+  }).join('');
+
+  return `<div class="topbar">
+    <div><div class="topbar-title">⚽ Liga</div>
+    <div class="topbar-sub">${done} / ${total} Spiele gespielt</div></div>
+    <button class="icon-btn" onclick="if(confirm('Neues Turnier starten?')){fifaNew();renderFifa();}" title="Neu">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+    </button>
+  </div>
+  ${matchCard}
+  <div class="section-label" style="margin-bottom:8px">Tabelle</div>
+  <div style="overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:14px">
+    <table class="fifa-table"><thead><tr>
+      <th>#</th><th>Spieler</th><th>Sp</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>±</th><th>Pkt</th>
+    </tr></thead><tbody>${tableRows}</tbody></table>
+  </div>
+  ${history ? `<div class="section-label" style="margin:16px 0 8px">Ergebnisse</div>
+  <div class="card">${history}</div>` : ''}`;
+}
+
+function buildFifaKO() {
+  const {players, matches} = fs;
+  const rounds = [...new Set(matches.map(m => m.round))].sort((a,b) => a-b);
+  const maxR = Math.max(...rounds);
+  const rNames = {[maxR]:'Finale', [maxR-1]:'Halbfinale', [maxR-2]:'Viertelfinale'};
+  const getRName = r => rNames[r] || `Runde ${r}`;
+
+  const cur = matches.find(m => !m.played && m.home !== null);
+  let matchCard = '';
+  if (cur) {
+    const hp = players[cur.home], ap = players[cur.away];
+    matchCard = `<div class="fifa-match-card">
+      <div class="fifa-match-label">${getRName(cur.round)}</div>
+      <div class="fifa-vs-row">
+        <div class="fifa-team-block">
+          <div class="fifa-flag">${hp.flag}</div>
+          <div class="fifa-team-name">${hp.team}</div>
+          <div class="fifa-player-name">${hp.name}</div>
+        </div>
+        <div class="fifa-score-inputs">
+          <input id="score-home" type="number" inputmode="numeric" min="0" max="99" value="0" class="fifa-score-input" oninput="fifaCheckPen()">
+          <div class="fifa-colon">:</div>
+          <input id="score-away" type="number" inputmode="numeric" min="0" max="99" value="0" class="fifa-score-input" oninput="fifaCheckPen()">
+        </div>
+        <div class="fifa-team-block">
+          <div class="fifa-flag">${ap.flag}</div>
+          <div class="fifa-team-name">${ap.team}</div>
+          <div class="fifa-player-name">${ap.name}</div>
+        </div>
+      </div>
+      <div id="pen-section" style="display:none;margin-top:10px;text-align:center">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Elfmeter</div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:12px">
+          <input id="pen-home" type="number" inputmode="numeric" min="0" max="20" value="" placeholder="0" class="fifa-score-input" style="width:60px;height:48px;font-size:20px">
+          <span style="font-size:20px;color:var(--text2)">:</span>
+          <input id="pen-away" type="number" inputmode="numeric" min="0" max="20" value="" placeholder="0" class="fifa-score-input" style="width:60px;height:48px;font-size:20px">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="fifaSaveScore()" style="margin-top:12px">✓ Ergebnis speichern</button>
+    </div>`;
+  } else {
+    const final = matches.filter(m => m.round === maxR)[0];
+    if (final?.played) {
+      const w = players[final.winner];
+      matchCard = `<div class="fifa-winner-card">
+        <div style="font-size:52px">🏆</div>
+        <div class="fifa-winner-name">${w.name}</div>
+        <div class="fifa-winner-team">${w.flag} ${w.team}</div>
+        <div class="fifa-winner-points">Turniersieger!</div>
+      </div>`;
+    }
+  }
+
+  let bracket = '';
+  rounds.forEach(r => {
+    bracket += `<div class="fifa-round-label">${getRName(r)}</div>`;
+    matches.filter(m => m.round === r).sort((a,b) => a.slot-b.slot).forEach(m => {
+      const hp = m.home !== null ? players[m.home] : null;
+      const ap = m.away !== null ? players[m.away] : null;
+      const hWin = m.played && m.winner === m.home;
+      const aWin = m.played && m.winner === m.away;
+      bracket += `<div class="fifa-bracket-match">
+        <div class="fifa-bracket-team${hWin?' winner':''}">
+          ${hp ? `${hp.flag} <strong>${hp.name}</strong> <span style="color:var(--text2);font-size:11px;margin-left:4px">${hp.team}</span>` : '<span style="color:var(--text2)">TBD</span>'}
+          ${m.played ? `<span class="fifa-bracket-score${hWin?' win':''}">${m.homeGoals}${m.homePen!==null?` (${m.homePen})`:''}</span>` : ''}
+        </div>
+        <div class="fifa-bracket-team${aWin?' winner':''}">
+          ${ap ? `${ap.flag} <strong>${ap.name}</strong> <span style="color:var(--text2);font-size:11px;margin-left:4px">${ap.team}</span>` : '<span style="color:var(--text2)">TBD</span>'}
+          ${m.played ? `<span class="fifa-bracket-score${aWin?' win':''}">${m.awayGoals}${m.awayPen!==null?` (${m.awayPen})`:''}</span>` : ''}
+        </div>
+      </div>`;
+    });
+  });
+
+  return `<div class="topbar">
+    <div><div class="topbar-title">🏆 K.O. Turnier</div>
+    <div class="topbar-sub">${players.length} Teams</div></div>
+    <button class="icon-btn" onclick="if(confirm('Neues Turnier starten?')){fifaNew();renderFifa();}" title="Neu">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+    </button>
+  </div>
+  ${matchCard}
+  <div class="section-label" style="margin-bottom:8px">Bracket</div>
+  <div class="card">${bracket}</div>`;
+}
+
+function fifaCheckPen() {
+  const h = document.getElementById('score-home');
+  const a = document.getElementById('score-away');
+  const pen = document.getElementById('pen-section');
+  if (h && a && pen) pen.style.display = h.value === a.value && h.value !== '' ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
 
 loadState();
+fifaLoad();
 renderPlan();
 renderSetup();
 renderHomeTimer();
